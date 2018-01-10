@@ -1,0 +1,69 @@
+<!-- 
+    liaotuo 
+    2016.09.11 
+    往地图中添加标注点实例 
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" 
+//ak填自己申请的ak
+src="http://api.map.baidu.com/api?v=2.0& ak=百度地图API开发者密钥AK">
+</script>
+<title>百度地图api展示</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+//新建三个地图上点
+var points = [  
+{"lng":112.58,"lat":26.89,"url":"http://www.baidu.com","id":1,"name":"p1"},  
+{"lng":112.59,"lat":26.90,"url":"http://www.mi.com","id":2,"name":"p2"},  
+{"lng":112.57,"lat":26.88,"url":"http://www.csdn.com","id":3,"name":"p3"}  
+]; 
+//创建标注点并添加到地图中
+function addMarker(points) {
+    //循环建立标注点
+    for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        var marker = new BMap.Marker(point); //将点转化成标注点
+        map.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("click",
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+}
+function showInfo(thisMarker,point) {
+    //获取点的信息
+    var sContent = 
+    '<ul style="margin:0 0 5px 0;padding:0.2em 0">'  
+    +'<li style="line-height: 26px;font-size: 15px;">'  
+    +'<span style="width: 50px;display: inline-block;">id：</span>' + point.id + '</li>'  
+    +'<li style="line-height: 26px;font-size: 15px;">'  
+    +'<span style="width: 50px;display: inline-block;">名称：</span>' + point.name + '</li>'  
+    +'<li style="line-height: 26px;font-size: 15px;"><span style="width: 50px;display: inline-block;">查看：</span><a href="'+point.url+'">详情</a></li>'  
+    +'</ul>';
+    var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+    thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+}
+//创建地图
+var map = new BMap.Map("allmap");    
+map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 设置中心点
+map.centerAndZoom( "衡阳");
+map.setCurrentCity("衡阳");          //设置为衡阳
+map.addControl(new BMap.MapTypeControl());   
+map.enableScrollWheelZoom(true);     
+addMarker(points);
+</script>

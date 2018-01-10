@@ -1,0 +1,61 @@
+<!-- 
+    liaotuo 
+    2016.09.11 
+    自动调整缩放等级 实例
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0& ak=你自己申请的ak">
+</script>
+<title>地图根据标注点自适应大小</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+// 原始gps坐标
+var points = [  
+{"lng":112.58,"lat":26.89,"url":"http://www.baidu.com","id":1,"name":"p1"},  
+{"lng":112.59,"lat":26.90,"url":"http://www.taobao.com","id":2,"name":"p2"},  
+{"lng":112.57,"lat":26.88,"url":"http://www.google.com","id":3,"name":"p3"}  
+]; 
+// 百度坐标系坐标(地图中需要使用这个)
+var bPoints = new Array();
+//创建标注点并添加到地图中
+function addMarker(points) {
+	//循环建立标注点
+	for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+		var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        bPoints.push(point); // 添加到百度坐标数组 用于自动调整缩放级别
+		var marker = new BMap.Marker(point); //将点转化成标注点
+		map.addOverlay(marker);  //将标注点添加到地图上
+	}
+}
+
+// 根据点的数组自动调整缩放级别
+function setZoom (bPoints) {
+	 var view = map.getViewport(eval(bPoints));  
+        var mapZoom = view.zoom;   
+        var centerPoint = view.center;   
+        map.centerAndZoom(centerPoint,mapZoom);  
+}
+
+//创建地图
+var map = new BMap.Map("allmap");    
+map.centerAndZoom(new BMap.Point(112.591886,26.905407), 14); // 设置中心点
+addMarker(points);
+map.addControl(new BMap.MapTypeControl());   
+map.enableScrollWheelZoom(true);     
+
+setTimeout(function(){
+    setZoom(bPoints);
+}, 3000)
+
+</script>

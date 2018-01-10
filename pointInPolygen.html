@@ -1,0 +1,97 @@
+<!-- 
+    liaotuo 
+    2016.09.11 
+    判断点在多边形内
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=百度地图API开发者密钥AK"></script>
+<script type="text/javascript" src="js/GeoUtils.js"></script>
+
+
+<title>圆形区域判断</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+//创建地图
+var map = new BMap.Map("allmap");  
+//创建一个多边形
+
+//创建多边形  
+var polygon2 = new BMap.Polygon([  
+      new BMap.Point(112.579325,26.915291),  
+      new BMap.Point(112.584967,26.899086),  
+      new BMap.Point(112.608287,26.898023),  
+      new BMap.Point(112.605035,26.90764),  
+      new BMap.Point(112.602825,26.914356),  
+      new BMap.Point(112.588254,26.909862),  
+      ], {strokeColor:"#f50704",fillColor:"#cfcfcf", strokeWeight:5, strokeOpacity:0,fillOpacity:0,});  
+
+ var point2s = [  
+      new BMap.Point(112.586149,26.913201),  
+      new BMap.Point(112.58464,26.909432),  
+      new BMap.Point(112.585143,26.899219),  
+      new BMap.Point(112.600953,26.898832),  
+      new BMap.Point(112.607421,26.900572),  
+      new BMap.Point(112.606631,26.904825),  
+      new BMap.Point(112.606523,26.909142),  
+      new BMap.Point(112.59772,26.909399),
+      ];
+//创建标注点并添加到地图中
+function addMarker(points) {
+    //循环建立标注点
+    for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var marker = new BMap.Marker(points[i]); //将点转化成标注点
+        map.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("click",
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+}
+
+function showInfo(thisMarker,point) {
+
+    //判断点是否在
+    if(BMapLib.GeoUtils.isPointInPolygon(point,polygon2)){
+      var infoWindow = new BMap.InfoWindow("在区域内");
+      thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+  }else
+  {
+     var infoWindow = new BMap.InfoWindow("不在区域内");
+      thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+  }
+}
+
+
+function initialize() {  
+    alert("点击标注点可以显示是否在区域内");
+  // 百度地图API功能  
+  map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件  
+  map.addControl(new BMap.ScaleControl());                    // 添加比例尺控件  
+  map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件  
+  map.enableScrollWheelZoom();                            //启用滚轮放大缩小  
+  map.addControl(new BMap.MapTypeControl());          //添加地图类型控件  
+
+    var point = new BMap.Point(112.595384,26.904631);    // 创建点坐标  
+        map.centerAndZoom(point,15);                      // 初始化地图,设置中心点坐标和地图级别。  
+        addMarker(point2s); 
+  map.addOverlay(polygon2);
+}  
+
+initialize();
+
+</script>
