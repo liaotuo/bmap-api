@@ -36,4 +36,4 @@
 ![](https://github.com/liaotuo/BMapAPI/blob/master/img/draw.png?raw=true)
 
 # Contact
-E-mail: lt37@qq.com
+E-mail: liaotuo.io@qq.com
